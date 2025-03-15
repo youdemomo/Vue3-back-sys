@@ -1,5 +1,26 @@
 <script lang='ts' setup>
   import { Plus } from '@element-plus/icons-vue';
+
+  // 测试mock接口
+  import axios from 'axios'
+  import { onMounted } from 'vue';
+
+
+  // 登录接口测试
+  const loginTest = async () => {
+    const res = await axios({
+      url: '/api/user/login',
+      method: "post",
+      data: {
+        username: 'admin',
+        password: '111111',
+      }
+    })
+
+    console.log(res);
+  }
+
+  onMounted(() => loginTest())
 </script>
 
 <template>
