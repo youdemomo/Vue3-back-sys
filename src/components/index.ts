@@ -1,4 +1,3 @@
-// 对外暴露插件对象
 import SvgIcon from '@/components/SvgIcon/index.vue'
 
 // 存储所有要注册的组件

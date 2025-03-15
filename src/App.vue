@@ -3,10 +3,21 @@
 </script>
 
 <template>
-  <div class=''>app</div>
-  <el-button :icon="Plus" circle />
-  <SvgIcon name="cap" width="20px" height="20px"></SvgIcon>
+  <div>
+    <h1>你好</h1>
+    <h2>我测你</h2>
+  </div>
 
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+  div {
+    h1 {
+      color: $color;
+    }
+
+    h2 {
+      color: $a;
+    }
+  }
+</style>
