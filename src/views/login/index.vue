@@ -1,12 +1,41 @@
 <script lang='ts' setup>
     import { User, Lock } from '@element-plus/icons-vue'
-    import { reactive } from 'vue';
+    import { reactive, ref } from 'vue'
+    import { useUserStore } from '../../store/modules/user'
+    import { useRouter } from 'vue-router'
+    import { ElMessage, ElNotification } from 'element-plus'
+
+    const router = useRouter()
+    // el-btn的加载效果
+    const loading = ref(false)
 
     // todo: 登录
+    const userStore = useUserStore()
     const loginForm = reactive({
         username: 'admin',
         password: '111111'
     })
+    const login = async () => {
+        loading.value = true
+        try {
+            // 登录成功后跳转
+            await userStore.userLogin(loginForm)
+            router.push('/')
+            ElNotification({
+                type: 'success',
+                message: '登录成功'
+            })
+            loading.value = false
+        } catch (error) {
+            ElNotification({
+                type: 'error',
+                message: (error as Error).message
+            })
+            loading.value = false
+        }
+    }
+
+
 </script>
 
 <template>
@@ -27,7 +56,8 @@
                     </el-form-item>
                     <el-form-item>
                         <!-- 登录按钮 -->
-                        <el-button class="login-btn" type="success" size="default">登录</el-button>
+                        <el-button class="login-btn" type="success" size="default" @click="login"
+                            :loading="loading">登录</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -49,15 +79,16 @@
             top: 30vh;
             background: url('../../assets/images/login_form.png') no-repeat;
             background-size: cover;
-            padding: 40px;
-            padding-bottom: 30px;
+            padding: 40px 54px;
 
             h1 {
+                margin-left: -26px;
                 color: white;
                 font-size: 40px;
             }
 
             h2 {
+                margin-left: -18px !important;
                 color: white;
                 font-size: 20px;
                 margin: 20px 0;

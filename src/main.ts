@@ -11,11 +11,14 @@ import globalComponent from '@/components/index.ts'
 import '@/styles/index.scss'
 // 路由器
 import router from '@/router/index.ts'
+// pinia
+import pinia from './store'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(ElementPlus)
 app.use(globalComponent)
+app.use(pinia)
 
 app.mount('#app')
