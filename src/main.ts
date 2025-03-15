@@ -9,11 +9,13 @@ import 'virtual:svg-icons-register'
 import globalComponent from '@/components/index.ts'
 // 引入模板的全局样式(用于清除浏览器的默认样式)
 import '@/styles/index.scss'
+// 路由器
+import router from '@/router/index.ts'
 
 const app = createApp(App)
 
+app.use(router)
 app.use(ElementPlus)
-
 app.use(globalComponent)
 
 app.mount('#app')

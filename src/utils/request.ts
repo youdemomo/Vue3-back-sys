@@ -20,7 +20,7 @@ request.interceptors.response.use(
   // bro: 响应失败回调
   error => {
     // 存储网络错误信息
-    const message = ''
+    let message = ''
     // 存储状态码
     const status = error.response.status
     switch (status) {

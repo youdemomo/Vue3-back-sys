@@ -21,8 +21,7 @@
 
 <template>
   <div>
-    <h1>你好</h1>
-    <h2>我测你</h2>
+    <router-view></router-view>
   </div>
 
 </template>
