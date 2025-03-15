@@ -1,20 +1,16 @@
 <script lang='ts' setup>
   import { Plus } from '@element-plus/icons-vue';
 
-  // 测试二次封装的axios
-  import request from './utils/request';
+  // 测试被类型约束的接口
+  import { reqLogin } from './api/user/index'
   import { onMounted } from 'vue';
 
 
   // 登录接口测试
   const loginTest = async () => {
-    const res = await request({
-      url: '/user/login',
-      method: 'POST',
-      data: {
-        username: 'admin',
-        password: '111111'
-      }
+    const res = await reqLogin({
+      username: 'admin',
+      password: '111111'
     })
 
     console.log(res);
