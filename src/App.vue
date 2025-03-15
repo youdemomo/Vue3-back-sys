@@ -1,19 +1,19 @@
 <script lang='ts' setup>
   import { Plus } from '@element-plus/icons-vue';
 
-  // 测试mock接口
-  import axios from 'axios'
+  // 测试二次封装的axios
+  import request from './utils/request';
   import { onMounted } from 'vue';
 
 
   // 登录接口测试
   const loginTest = async () => {
-    const res = await axios({
-      url: '/api/user/login',
-      method: "post",
+    const res = await request({
+      url: '/user/login',
+      method: 'POST',
       data: {
         username: 'admin',
-        password: '111111',
+        password: '111111'
       }
     })
 
