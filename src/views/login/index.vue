@@ -4,6 +4,7 @@
     import { useUserStore } from '../../store/modules/user'
     import { useRouter } from 'vue-router'
     import { ElMessage, ElNotification } from 'element-plus'
+    import { getTime } from '../../utils/time'
 
     const router = useRouter()
     // el-btn的加载效果
@@ -23,7 +24,8 @@
             router.push('/')
             ElNotification({
                 type: 'success',
-                message: '登录成功'
+                title: `嗨，${getTime()}`,
+                message: '欢迎回来',
             })
             loading.value = false
         } catch (error) {

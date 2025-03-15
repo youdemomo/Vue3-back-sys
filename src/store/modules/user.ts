@@ -2,19 +2,20 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { reqLogin } from '../../api/user'
-import type { loginForm } from '../../api/user/type'
+import type { loginForm, loginResponseData } from '../../api/user/type'
+import type { UserState } from './types/type'
 
 export const useUserStore = defineStore(
   'User',
   () => {
     // todo: 存储用户token
-    const token = ref('')
+    const token: UserState = ref('')
 
     // todo: 用户登录
     const userLogin = async (data: loginForm) => {
-      const result = await reqLogin(data)
+      const result: loginResponseData = await reqLogin(data)
       if (result.code === 200) {
-        token.value = result.data.token
+        token.value = result.data.token as string
         return 'ok'
       } else {
         // 传给登录组件错误信息

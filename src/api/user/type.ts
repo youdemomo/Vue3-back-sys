@@ -6,7 +6,8 @@ export interface loginForm {
 
 // todo: 登录接口返回类型
 interface dataType {
-  token: string
+  token?: string
+  message?: string
 }
 export interface loginResponseData {
   code: number
