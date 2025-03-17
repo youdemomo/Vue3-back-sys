@@ -16,7 +16,7 @@
         // rule：数组的校验规则对象
         // value：表单元素的文本内容
         // callback：符合条件放行，不符合注入错误信息
-        if (/^\d{2,10}$/.test(value)) {
+        if (/^[a-zA-Z0-9]{2,10}$/.test(value)) {
             callback()
         } else {
             callback(new Error('账号长度应在2到10位之间'))

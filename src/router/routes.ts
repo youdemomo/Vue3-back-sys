@@ -11,7 +11,7 @@ export const constantRoute = [
   {
     path: '/',
     name: 'layout',
-    component: () => import('@/views/home/index.vue'),
+    component: () => import('@/layout/index.vue'),
   },
   // 错误页面
   {
