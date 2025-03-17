@@ -1,13 +1,17 @@
 <script lang='ts' setup>
-
+    import Logo from './Logo/index.vue'
 </script>
 
 <template>
     <div class='layout_container'>
         <!-- 左侧菜单 -->
-        <div class="layout_slider">1</div>
+        <div class="layout_slider">
+            <Logo></Logo>
+        </div>
+
         <!-- 顶部导航 -->
         <div class="layout_tabbar">2</div>
+
         <!-- 主体内容 -->
         <div class="layout_main">3
             <p style="height: 10000px;"></p>
