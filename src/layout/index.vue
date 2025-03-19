@@ -5,6 +5,8 @@
     import Menu from './Menu/index.vue'
     // 获取路由数组
     import { useUserStore } from '../store/modules/user';
+    // 封装二级路由出口
+    import Main from './Main/index.vue'
 
     const userStore = useUserStore()
 </script>
@@ -26,8 +28,9 @@
         <div class="layout_tabbar">2</div>
 
         <!-- 主体内容 -->
-        <div class="layout_main">3
-            <p style="height: 10000px;"></p>
+        <div class="layout_main">
+            <!-- todo: 二级路由出口 -->
+            <Main></Main>
         </div>
     </div>
 </template>

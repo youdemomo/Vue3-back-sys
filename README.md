@@ -1,5 +1,69 @@
-# Vue 3 + TypeScript + Vite
+# 1. 递归组件
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+组件在模板中使用自己，用于渲染嵌套路由
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+```html
+    <!-- 有多个子路由 -->
+    <el-sub-menu v-if="item.children && item.children.length > 1 && item.meta.isShow" :index="item.path">
+        <!-- 顶级菜单标题 -->
+        <template #title>
+            <el-icon>
+                <component :is="item.meta.icon"></component>
+            </el-icon>
+            <span>{{ item.meta.title }}</span>
+        </template>
+        <!-- 递归传入chilren数组，保证能渲染出多级路由的children -->
+        <Menu :menuList="item.children"></Menu>
+    </el-sub-menu>
+```
+
+嵌套组件需要具名，安装插件可在setup语法糖中为组件命名
+
+`npm i vite-plugin-vue-setup-extend -D`
+
+在vite.config.ts中：
+
+```ts
+import { defineConfig } from 'vite'
+import VueSetupExtend from 'vite-plugin-vue-setup-extend'
+
+export default defineConfig({
+  plugins: [ VueSetupExtend() ]
+})
+```
+
+
+
+# 2. 路由出口的二次封装
+
+使用路由出口的插槽注入路由目标组件
+
+```html
+<template>
+    <div class=''>
+        <!-- 使用插槽注入路由组件 -->
+        <router-view v-slot="{ Component }">
+            <transition name="fade">
+                <component :is="Component"></component>
+            </transition>
+        </router-view>
+    </div>
+</template>
+```
+
+```css
+<style scoped>
+    .fade-enter-from {
+        opacity: 0;
+    }
+
+    .fade-enter-active {
+        transition: all .3s;
+    }
+
+    .fade-enter-to {
+        opacity: 1;
+    }
+</style>
+```
+
