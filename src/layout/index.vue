@@ -1,5 +1,12 @@
 <script lang='ts' setup>
+    // logo组件
     import Logo from './Logo/index.vue'
+    // 左侧菜单组件
+    import Menu from './Menu/index.vue'
+    // 获取路由数组
+    import { useUserStore } from '../store/modules/user';
+
+    const userStore = useUserStore()
 </script>
 
 <template>
@@ -10,17 +17,7 @@
             <!-- 导航菜单 -->
             <el-scrollbar class="scrollbar">
                 <el-menu background-color="$base-menu-background" text-color="white">
-                    <el-menu-item index="1">首页</el-menu-item>
-                    <el-menu-item index="2">数据大屏</el-menu-item>
-                    <!-- 多级菜单 -->
-                    <el-sub-menu index="3">
-                        <template #title>
-                            <span>权限管理</span>
-                        </template>
-                        <el-menu-item index="3-1">用户管理</el-menu-item>
-                        <el-menu-item index="3-2">角色管理</el-menu-item>
-                        <el-menu-item index="3-3">菜单管理</el-menu-item>
-                    </el-sub-menu>
+                    <Menu :menuList="userStore.menuRoutes"></Menu>
                 </el-menu>
             </el-scrollbar>
         </div>
@@ -49,6 +46,11 @@
             .scrollbar {
                 width: 100%;
                 height: calc(100vh - $base-menu-logo-hegiht);
+
+                // 去除菜单组件右边边框
+                .el-menu {
+                    border: none
+                }
             }
         }
 

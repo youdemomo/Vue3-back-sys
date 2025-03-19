@@ -5,6 +5,8 @@ import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // 引入mock插件
 import { viteMockServe } from 'vite-plugin-mock'
+// setup语法糖组件命名
+import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {
@@ -19,6 +21,7 @@ export default defineConfig(({ command }) => {
         // 保证只有开发阶段能使用mock接口
         localEnabled: command === 'serve',
       }),
+      VueSetupExtend(),
     ],
     resolve: {
       alias: {
