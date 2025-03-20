@@ -32,7 +32,8 @@
             <Logo></Logo>
             <!-- 导航菜单 -->
             <el-scrollbar class="scrollbar">
-                <el-menu background-color="#001529" text-color="white" :default-active="route.path" :collapse="isFold">
+                <el-menu background-color="#001529" text-color="white" :default-active="route.path" :collapse="isFold"
+                    :collapse-transition='false'>
                     <Menu :menuList="userStore.menuRoutes"></Menu>
                 </el-menu>
             </el-scrollbar>
@@ -117,7 +118,6 @@
             &.fold {
                 width: calc(100vw - $base-menu-min);
                 left: $base-menu-min;
-                color: #a4fff7
             }
         }
     }

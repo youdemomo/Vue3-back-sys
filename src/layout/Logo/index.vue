@@ -3,7 +3,6 @@
     import setting from '../../setting';
 
 </script>
-
 <template>
     <div class='logo'>
         <img :src=setting.logo alt="" v-if="setting.isShowLogo">
@@ -28,6 +27,8 @@
         p {
             font-size: $base-logo-title-fontSize;
             margin-left: 10px;
+            // 禁止文本换行，防止菜单折叠时文字抖动
+            white-space: nowrap;
         }
     }
 </style>

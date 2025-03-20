@@ -123,40 +123,67 @@ export default defineConfig({
 layout组件：
 
 ```ts
-    const isFold = ref(false)
-    provide('getIsFold', (fold) => {
-        isFold.value = fold
-    })
+const isFold = ref(false)
+provide('getIsFold', (fold) => {
+    isFold.value = fold
+})
 ```
 
 breadLeft组件：
 
 ```ts
-    const provideFold = inject('getIsFold')
-    const changeIcon = () => {
-        fold.value = !fold.value
-        provideFold(fold.value)
-    }
+const provideFold = inject('getIsFold')
+const changeIcon = () => {
+    fold.value = !fold.value
+    provideFold(fold.value)
+}
 ```
 
 layout组件获得布尔值后，根据布尔值为顶部导航栏，左侧菜单和二级路由出口动态绑定fold类名，并控制el-menu组件的collapse属性实现菜单折叠：
 
 ```html
-        <!-- 左侧菜单 -->
-        <div class="layout_slider" :class="{ fold: isFold }">
+<!-- 左侧菜单 -->
+<div class="layout_slider" :class="{ fold: isFold }">
 
-		            <!-- 导航菜单 -->
-            <el-scrollbar class="scrollbar">
-            <el-menu background-color="#001529" text-color="white" 				:default-active="route.path" :collapse="isFold">
+    <!-- 导航菜单 -->
+    <el-scrollbar class="scrollbar">
+        <el-menu background-color="#001529" text-color="white" 				:default-active="route.path" :collapse="isFold">
 ```
 
 ```css
-            // 菜单折叠展开动画
-            transition: all .3s;
+// 菜单折叠展开动画
+transition: all .3s;
 
-            // 拥有fold类名时的样式
-            &.fold {
-                width: $base-menu-min;
-            }
+// 拥有fold类名时的样式
+&.fold {
+    width: $base-menu-min;
+}
+```
+
+前往logo组件，为展示标题的p标签添加如下css，防止菜单折叠时文字抖动：
+
+```css
+// 禁止文本换行，防止菜单折叠时文字抖动
+white-space: nowrap;
+```
+
+
+
+# 6. 路由渲染面包屑
+
+通过route的matched获取当前路由的所有父路由和当前路由，v-for渲染面包屑item。当路由的meta没有title时不渲染。
+
+```html
+<!-- 面包屑 -->
+<el-breadcrumb separator-icon="ArrowRight">
+    <el-breadcrumb-item v-for="item in route.matched" :key="item.path" :to="item.path" v-show="item.meta.title">
+        <!-- 面包屑图标 -->
+        <el-icon style="margin-right: 6px;">
+            <component :is="item.meta.icon" style="margin-top: 2px;"></component>
+        </el-icon>
+        <!-- 面包屑标题 -->
+        <span> {{ item.meta.title }}</span>
+    </el-breadcrumb-item>
+</el-breadcrumb>
 ```
 

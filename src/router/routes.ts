@@ -20,7 +20,8 @@ export const constantRoute = [
     name: 'layout',
     component: () => import('@/layout/index.vue'),
     meta: {
-      title: 'layout',
+      // 标题置空，防止被面包屑渲染
+      title: '',
       isShow: true,
       // 图标
       icon: 'UserFilled',
@@ -60,6 +61,7 @@ export const constantRoute = [
       isShow: true,
       icon: 'Lock',
     },
+    redirect: '/acl/user',
     children: [
       // bro: 1.用户管理
       {
@@ -107,6 +109,7 @@ export const constantRoute = [
       icon: 'Goods',
       isShow: true,
     },
+    redirect: '/product/trademark',
     children: [
       // bro: 1. 品牌管理
       {
