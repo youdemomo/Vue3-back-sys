@@ -1,4 +1,41 @@
-# 1. 递归组件
+# 1. 全局组件注册插件
+
+​	通过 `Object.keys()` 获取 `allGlobalComponent` 的所有 key（组件名）。
+
+​	依次调用 `app.component(key, allGlobalComponent[key])` 进行注册。
+
+​	然后在main.ts中引入并使用这个插件即可。
+
+```ts
+import SvgIcon from '@/components/SvgIcon/index.vue'
+// 所有element-ui图标
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+// 存储所有要注册的组件
+const allGlobalComponent = {
+  SvgIcon,
+}
+
+export default {
+  install(app: any) {
+    // Obj.keys方法解析出包含所有组件名的数组
+    // 遍历数组注册全局组件
+    Object.keys(allGlobalComponent).forEach(key => {
+      app.component(key, allGlobalComponent[key])
+    })
+
+    // 注册所有图标
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+      app.component(key, component)
+    }
+  },
+}
+
+```
+
+
+
+# 2. 递归组件
 
 组件在模板中使用自己，用于渲染嵌套路由
 
@@ -34,7 +71,7 @@ export default defineConfig({
 
 
 
-# 2. 路由出口的二次封装
+# 3. 路由出口的二次封装
 
 使用路由出口的插槽注入路由目标组件
 
@@ -67,3 +104,12 @@ export default defineConfig({
 </style>
 ```
 
+
+
+# 4. el-menu组件根据路由展开菜单
+
+```html
+ <el-menu background-color="$base-menu-background" text-color="white" :default-active="route.path">
+```
+
+:default-active="route.path"用于指定默认激活的菜单item的index值，而每一个item的index就是路由path

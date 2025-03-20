@@ -17,11 +17,11 @@
     <template v-for="item in menuList" :key="item.path">
         <!-- 没有子路由，直接渲染 -->
         <el-menu-item v-if="!item.children && item.meta.isShow" :index="item.path" @click="goRoute">
+            <!-- 图标，传入图标名 -->
+            <el-icon>
+                <component :is="item.meta.icon"></component>
+            </el-icon>
             <template #title>
-                <!-- 图标，传入图标名 -->
-                <el-icon>
-                    <component :is="item.meta.icon"></component>
-                </el-icon>
                 <span>{{ item.meta.title }}</span>
             </template>
         </el-menu-item>
@@ -29,10 +29,10 @@
         <!-- 只有一个子路由，则将这个子路由渲染出来 -->
         <el-menu-item v-if="item.children && item.children.length === 1 && item.meta.isShow"
             :index="item.children[0].path" @click="goRoute">
+            <el-icon>
+                <component :is="item.meta.icon"></component>
+            </el-icon>
             <template #title>
-                <el-icon>
-                    <component :is="item.meta.icon"></component>
-                </el-icon>
                 {{ item.children[0].meta.title }}
             </template>
         </el-menu-item>
