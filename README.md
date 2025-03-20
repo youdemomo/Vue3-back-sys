@@ -259,3 +259,26 @@ watch(() => isRefsh.value, () => {
     }
 ```
 
+
+
+# 9. axios请求拦截器拼接token
+
+​	第9行的拼接方式是由后端决定的。
+
+​	注意：userStore的声明不能在全局作用域，否则会出现依赖循环引用的问题。
+
+```ts
+// todo: 请求拦截器
+// 传入的配置对象config，有许多与请求相关的信息
+request.interceptors.request.use(config => {
+  // 获取用户token
+  const userStore = useUserStore()
+
+  // token存在时拼接到请求头
+  if (userStore.token) {
+    config.headers.token = userStore.token
+  }
+  return config
+})
+```
+

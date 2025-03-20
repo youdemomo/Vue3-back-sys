@@ -1,7 +1,7 @@
 // 用户相关仓库
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { reqLogin } from '../../api/user'
+import { reqLogin, reqUserInfo } from '../../api/user'
 import type {
   loginForm,
   loginResponseData,
@@ -14,10 +14,11 @@ import { constantRoute } from '../../router/routes'
 export const useUserStore = defineStore(
   'User',
   () => {
-    // todo: 存储用户token
-    const token: UserState = ref('')
-    // todo: 存储路由数组
+    // bro: 存储路由数组
     const menuRoutes: menuRoutes = ref(constantRoute)
+
+    // bro: 存储用户token
+    const token: UserState = ref('')
 
     // todo: 用户登录
     const userLogin = async (data: loginForm) => {
@@ -31,10 +32,28 @@ export const useUserStore = defineStore(
       }
     }
 
+    // bro: 存储用户名
+    const username = ref('')
+    const avatar = ref('')
+
+    // todo: 获取用户信息
+    const getUserInfo = async () => {
+      const result = await reqUserInfo()
+      // console.log(result)
+
+      if (result.code === 200) {
+        username.value = result.data.checkUser.username
+        avatar.value = result.data.checkUser.avatar
+      }
+    }
+
     return {
       token,
       userLogin,
       menuRoutes,
+      getUserInfo,
+      username,
+      avatar,
     }
   },
   {

@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '../store/modules/user'
 
+// 创建axios实例
 const request = axios.create({
   baseURL: '/api',
   timeout: 10000,
@@ -9,6 +11,13 @@ const request = axios.create({
 // todo: 请求拦截器
 // 传入的配置对象config，有许多与请求相关的信息
 request.interceptors.request.use(config => {
+  // 获取用户token
+  const userStore = useUserStore()
+
+  // token存在时拼接到请求头
+  if (userStore.token) {
+    config.headers.token = userStore.token
+  }
   return config
 })
 

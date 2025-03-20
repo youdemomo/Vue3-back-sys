@@ -1,4 +1,5 @@
 <script lang='ts' setup name="SettingRight">
+    import { useUserStore } from '../../../store/modules/user';
     import { emitter } from '../../../utils/emitter';
     import { ref } from 'vue';
 
@@ -24,6 +25,10 @@
             document.documentElement.requestFullscreen()
         }
     }
+
+    // todo: 获取登录用户信息
+    const userStore = useUserStore()
+
 </script>
 
 <template>
@@ -32,12 +37,12 @@
     <el-button type="primary" icon="FullScreen" circle @click="fullScreen" />
     <el-button type="primary" icon="Setting" circle />
     <!-- 用户头像 -->
-    <img src="../../../assets/icons/cap.svg" alt=""
-        style="height: 24px; width: 24px; margin: 0 14px; margin-left: 24px;">
+    <img :src="userStore.avatar" alt=""
+        style="height: 36px; width: 36px; margin: 0 14px; margin-left: 24px; border-radius: 50%;">
     <!-- 下拉菜单 -->
     <el-dropdown style="margin-right:26px;">
         <span class="el-dropdown-link">
-            admin
+            {{ userStore.username }}
             <el-icon class="el-icon--right">
                 <arrow-down />
             </el-icon>
