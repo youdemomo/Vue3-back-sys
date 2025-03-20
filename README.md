@@ -54,11 +54,11 @@ export default {
     </el-sub-menu>
 ```
 
-嵌套组件需要具名，安装插件可在setup语法糖中为组件命名
+​	嵌套组件需要具名，安装插件可在setup语法糖中为组件命名
 
 `npm i vite-plugin-vue-setup-extend -D`
 
-在vite.config.ts中：
+​	在vite.config.ts中：
 
 ```ts
 import { defineConfig } from 'vite'
@@ -118,9 +118,9 @@ export default defineConfig({
 
 # 5. 左侧菜单折叠
 
-首先，在折叠按钮组件中记录折叠的布尔值，使用inject接受layout组件提供的获取折叠布尔值的函数，传给layout组件记录折叠的布尔值。（祖孙组件通信，祖传函数，孙通过函数传给祖数据）
+​	首先，在折叠按钮组件中记录折叠的布尔值，使用inject接受layout组件提供的获取折叠布尔值的函数，传给layout组件记录折叠的布尔值。（祖孙组件通信，祖传函数，孙通过函数传给祖数据）
 
-layout组件：
+​	layout组件：
 
 ```ts
 const isFold = ref(false)
@@ -129,7 +129,7 @@ provide('getIsFold', (fold) => {
 })
 ```
 
-breadLeft组件：
+​	breadLeft组件：
 
 ```ts
 const provideFold = inject('getIsFold')
@@ -139,7 +139,7 @@ const changeIcon = () => {
 }
 ```
 
-layout组件获得布尔值后，根据布尔值为顶部导航栏，左侧菜单和二级路由出口动态绑定fold类名，并控制el-menu组件的collapse属性实现菜单折叠：
+​	layout组件获得布尔值后，根据布尔值为顶部导航栏，左侧菜单和二级路由出口动态绑定fold类名，并控制el-menu组件的collapse属性实现菜单折叠：
 
 ```html
 <!-- 左侧菜单 -->
@@ -160,7 +160,7 @@ transition: all .3s;
 }
 ```
 
-前往logo组件，为展示标题的p标签添加如下css，防止菜单折叠时文字抖动：
+​	前往logo组件，为展示标题的p标签添加如下css，防止菜单折叠时文字抖动：
 
 ```css
 // 禁止文本换行，防止菜单折叠时文字抖动
@@ -171,7 +171,7 @@ white-space: nowrap;
 
 # 6. 路由渲染面包屑
 
-通过route的matched获取当前路由的所有父路由和当前路由，v-for渲染面包屑item。当路由的meta没有title时不渲染。
+​	通过route的matched获取当前路由的所有父路由和当前路由，v-for渲染面包屑item。当路由的meta没有title时不渲染。
 
 ```html
 <!-- 面包屑 -->
@@ -186,4 +186,8 @@ white-space: nowrap;
     </el-breadcrumb-item>
 </el-breadcrumb>
 ```
+
+
+
+# 7. 页面刷新功能实现
 

@@ -1,10 +1,20 @@
 <script lang='ts' setup name="SettingRight">
+    import { emitter } from '../../../utils/emitter';
+    import { ref } from 'vue';
 
+
+    // todo: 刷新按钮回调
+    const refsh = ref(false)
+    const refreshMain = () => {
+        refsh.value = !refsh.value
+        // 触发Main组件绑定的send-refsh事件，通知Main组件刷新
+        emitter.emit('send-refsh', refsh.value)
+    }
 </script>
 
 <template>
     <!-- 三个按钮 -->
-    <el-button type="primary" icon="Refresh" circle />
+    <el-button type="primary" icon="Refresh" circle @click="refreshMain" />
     <el-button type="primary" icon="FullScreen" circle />
     <el-button type="primary" icon="Setting" circle />
     <!-- 用户头像 -->
