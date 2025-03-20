@@ -1,12 +1,15 @@
-// 提供全局样式变量
+// todo: 提供全局样式变量
 
-// 左侧导航栏宽度
+// 左侧菜单宽度
 $base-menu-width: 260px;
+
+// 左侧菜单收起时的宽度
+$base-menu-min: 50px;
 
 // 顶部导航高度
 $base-tabbar-height: 60px;
 
-// 左侧导航栏颜色
+// 左侧菜单颜色
 $base-menu-background: #001529;
 
 // 左侧logo高度

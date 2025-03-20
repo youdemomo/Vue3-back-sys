@@ -24,7 +24,7 @@
         justify-content: space-between;
         width: 100%;
         height: 100%;
-        background-image: linear-gradient(to right, #f3ebeb, #e9e4f0, #f3ebeb);
+        background-image: linear-gradient(to right, #faf0f0, #fdfcfe, #faf7f7);
         // background-color: aqua;
 
         // 左侧盒子

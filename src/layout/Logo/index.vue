@@ -1,4 +1,4 @@
-<script lang='ts' setup>
+<script lang='ts' setup name="Logo">
     // 引入标题logo配置
     import setting from '../../setting';
 
@@ -18,7 +18,7 @@
         height: $base-menu-logo-hegiht;
         color: white;
         align-items: center;
-        padding: 20px;
+        padding: 8px;
 
         img {
             width: 42px;
