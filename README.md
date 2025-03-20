@@ -191,3 +191,71 @@ white-space: nowrap;
 
 # 7. 页面刷新功能实现
 
+​	在顶部导航栏的右边组件SettingRight中，通过refsh的变动通知Main组件刷新，将refsh通过mitt传给Main:
+
+​	SettingRight:
+
+```ts
+// todo: 刷新按钮回调
+const refsh = ref(false)
+const refreshMain = () => {
+    refsh.value = !refsh.value
+    // 触发Main组件绑定的send-refsh事件，通知Main组件刷新
+    emitter.emit('send-refsh', refsh.value)
+}
+```
+
+​	Main:
+
+​	Main组件中，借助isRefsh监视SettingRight传来的刷新标识是否变化，变化则视为刷新，将refshFlag置为false，销毁二级路由出口。
+
+​	再通过nextTick()钩子，在二级路由销毁后（也就是DOM节点更新后）把refshFlag置为true，重新渲染二级路由出口。
+
+```ts
+// 通知刷新
+const isRefsh = ref(false)
+// 控制路由出口刷新
+const refshFlag = ref(true)
+// todo: 绑定事件，书写回调，接受刷新通知
+onMounted(() => emitter.on('send-refsh', (value) => {
+    isRefsh.value = value
+}))
+
+watch(() => isRefsh.value, () => {
+    // isRefsh变化后，refshFlag控制v-if刷新页面
+    refshFlag.value = false
+    // DOM更新后，即路由出口隐藏后，再渲染页面，实现刷新
+    nextTick(() => {
+        refshFlag.value = true
+    })
+})
+```
+
+```html
+<router-view v-slot="{ Component }">
+    <transition name="fade">
+        <component :is="Component" v-if="refshFlag"></component>
+    </transition>
+</router-view>
+```
+
+
+
+# 8. 全屏按钮功能实现
+
+```ts
+    // todo: 全屏按钮回调
+    const fullScreen = () => {
+        // 全屏返回true，否则返回null
+        let full = document.fullscreenElement
+
+        if (full) {
+            // 退出全屏
+            document.exitFullscreen()
+        } else {
+            // 进入全屏
+            document.documentElement.requestFullscreen()
+        }
+    }
+```
+

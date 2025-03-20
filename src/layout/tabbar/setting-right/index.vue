@@ -10,12 +10,26 @@
         // 触发Main组件绑定的send-refsh事件，通知Main组件刷新
         emitter.emit('send-refsh', refsh.value)
     }
+
+    // todo: 全屏按钮回调
+    const fullScreen = () => {
+        // 全屏返回true，否则返回null
+        let full = document.fullscreenElement
+
+        if (full) {
+            // 退出全屏
+            document.exitFullscreen()
+        } else {
+            // 进入全屏
+            document.documentElement.requestFullscreen()
+        }
+    }
 </script>
 
 <template>
     <!-- 三个按钮 -->
     <el-button type="primary" icon="Refresh" circle @click="refreshMain" />
-    <el-button type="primary" icon="FullScreen" circle />
+    <el-button type="primary" icon="FullScreen" circle @click="fullScreen" />
     <el-button type="primary" icon="Setting" circle />
     <!-- 用户头像 -->
     <img src="../../../assets/icons/cap.svg" alt=""
