@@ -37,5 +37,18 @@ export default defineConfig(({ command }) => {
         },
       },
     },
+    // 设置代理服务器
+    server: {
+      proxy: {
+        '/api': {
+          // 服务器地址
+          target: 'http://sph-api.atguigu.cn',
+          // 需要代理跨域
+          changeOrigin: true,
+          // 请求路径重写
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
   }
 })

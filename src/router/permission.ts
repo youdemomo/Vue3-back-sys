@@ -23,7 +23,9 @@ router.beforeEach((to: any, from: any, next: any) => {
         type: 'warning',
         message: '请先退出登录(T_T)',
       })
-      next({ path: '/' })
+      // read: 测试用，接口崩了
+      next()
+      // next({ path: '/' })
     } else {
       next()
     }

@@ -35,9 +35,9 @@
     const router = useRouter()
     const route = useRoute()
 
-    const logout = () => {
+    const logout = async () => {
         // 清空用户在pinia中的数据
-        userStore.userLogout()
+        await userStore.userLogout()
         ElMessage({
             type: 'success',
             message: '成功退出ヾ(￣▽￣)Bye~Bye~'
