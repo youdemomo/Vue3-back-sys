@@ -2,11 +2,10 @@
     import { User, Lock } from '@element-plus/icons-vue'
     import { onMounted, reactive, ref } from 'vue'
     import { useUserStore } from '../../store/modules/user'
-    import { useRouter } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { ElMessage, ElNotification } from 'element-plus'
     import { getTime } from '../../utils/time'
 
-    const router = useRouter()
     // el-btn的加载效果
     const loading = ref(false)
     // 获取表单实例
@@ -32,6 +31,8 @@
     }
 
     // todo: 登录
+    const router = useRouter()
+    const route = useRoute()
     const userStore = useUserStore()
     const loginForm = reactive({
         username: 'admin',
@@ -44,7 +45,11 @@
         try {
             // 登录成功后跳转
             await userStore.userLogin(loginForm)
-            router.push('/')
+            // 获取用户信息
+            await userStore.getUserInfo()
+            // 如果有route.query.redirect则跳转到上次退出登录时的页面，否则跳转到主页
+            router.replace(route.query.redirect || '/')
+
             ElNotification({
                 type: 'success',
                 title: `嗨，${getTime()}`,

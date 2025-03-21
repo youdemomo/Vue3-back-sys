@@ -47,6 +47,13 @@ export const useUserStore = defineStore(
       }
     }
 
+    // todo: 退出登录
+    const userLogout = () => {
+      token.value = ''
+      username.value = ''
+      avatar.value = ''
+    }
+
     return {
       token,
       userLogin,
@@ -54,9 +61,16 @@ export const useUserStore = defineStore(
       getUserInfo,
       username,
       avatar,
+      userLogout,
     }
   },
   {
-    persist: true,
+    persist: [
+      {
+        // 仅持久化pick数组中的数据到localStorage
+        pick: ['token', 'username', 'avatar'],
+        storage: localStorage,
+      },
+    ],
   },
 )

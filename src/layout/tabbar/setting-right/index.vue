@@ -1,7 +1,9 @@
 <script lang='ts' setup name="SettingRight">
+    import { useRoute, useRouter } from 'vue-router';
     import { useUserStore } from '../../../store/modules/user';
     import { emitter } from '../../../utils/emitter';
     import { ref } from 'vue';
+    import { ElMessage } from 'element-plus';
 
 
     // todo: 刷新按钮回调
@@ -29,6 +31,25 @@
     // todo: 获取登录用户信息
     const userStore = useUserStore()
 
+    // todo: 退出登录按钮回调
+    const router = useRouter()
+    const route = useRoute()
+
+    const logout = () => {
+        // 清空用户在pinia中的数据
+        userStore.userLogout()
+        ElMessage({
+            type: 'success',
+            message: '成功退出ヾ(￣▽￣)Bye~Bye~'
+        })
+        // 退出登录后传给登录页当前路由path，方便再次登录后回到退出登录时的页面
+        router.replace({
+            path: '/login',
+            query: { redirect: route.path }
+        })
+
+    }
+
 </script>
 
 <template>
@@ -49,7 +70,7 @@
         </span>
         <template #dropdown>
             <el-dropdown-menu>
-                <el-dropdown-item>退出登录</el-dropdown-item>
+                <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
         </template>
     </el-dropdown>
