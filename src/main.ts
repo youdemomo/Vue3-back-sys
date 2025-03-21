@@ -13,6 +13,8 @@ import '@/styles/index.scss'
 import router from '@/router/index.ts'
 // pinia
 import pinia from './store'
+// 全局路由守卫
+import './router/permission'
 
 const app = createApp(App)
 
