@@ -44,6 +44,9 @@ export const useUserStore = defineStore(
       if (result.code === 200) {
         username.value = result.data.checkUser.username
         avatar.value = result.data.checkUser.avatar
+        return 'ok'
+      } else {
+        return Promise.reject('获取用户信息失败')
       }
     }
 
