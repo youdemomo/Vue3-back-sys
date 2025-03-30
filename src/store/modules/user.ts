@@ -1,7 +1,7 @@
 // 用户相关仓库
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { reqLogin, reqUserInfo, reqLogout } from '../../api/user'
+import { reqLogin, reqUserInfo } from '../../api/user'
 import type { UserState } from './types/type'
 // 引入路由
 import { constantRoute } from '../../router/routes'
@@ -18,10 +18,10 @@ export const useUserStore = defineStore(
     // todo: 用户登录
     const userLogin = async (data: any) => {
       const result: any = await reqLogin(data)
-      console.log(result)
+      // console.log(result)
 
       if (result.code === 200) {
-        token.value = result.data.token as string
+        token.value = result.data as string
         return 'ok'
       } else {
         // 传给登录组件错误信息
@@ -39,7 +39,7 @@ export const useUserStore = defineStore(
       // console.log(result)
 
       if (result.code === 200) {
-        username.value = result.dataa.name
+        username.value = result.data.name
         avatar.value = result.data.avatar
         return 'ok'
       } else {
@@ -48,18 +48,10 @@ export const useUserStore = defineStore(
     }
 
     // todo: 退出登录
-    const userLogout = async () => {
-      const result = await reqLogout()
-      // console.log(result)
-
-      if (result.code === 200) {
-        token.value = ''
-        username.value = ''
-        avatar.value = ''
-        return 'ok'
-      } else {
-        return Promise.reject(new Error(result.message))
-      }
+    const userLogout = () => {
+      token.value = ''
+      username.value = ''
+      avatar.value = ''
     }
 
     return {

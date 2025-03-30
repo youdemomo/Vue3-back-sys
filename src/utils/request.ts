@@ -10,7 +10,7 @@ const request = axios.create({
 
 // todo: 请求拦截器
 // 传入的配置对象config，有许多与请求相关的信息
-request.interceptors.request.use(config => {
+request.interceptors.request.use((config) => {
   // 获取用户token
   const userStore = useUserStore()
 
@@ -25,9 +25,9 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use(
   // bro: 响应成功回调
   // 简化返回的数据
-  response => response.data,
+  (response) => response.data,
   // bro: 响应失败回调
-  error => {
+  (error) => {
     // 存储网络错误信息
     let message = ''
     // 存储状态码

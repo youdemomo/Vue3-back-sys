@@ -42,7 +42,7 @@ export default defineConfig(({ command }) => {
       proxy: {
         '/api': {
           // 服务器地址
-          target: 'http://sph-api.atguigu.cn',
+          target: 'http://localhost:9000',
           // 需要代理跨域
           changeOrigin: true,
           // 请求路径重写
