@@ -1,5 +1,6 @@
 // 用户相关接口
 import request from '@/utils/request'
+import type { loginFormData, loginResData, userInfoData } from './type'
 
 // 枚举接口地址
 enum API {
@@ -10,8 +11,8 @@ enum API {
 }
 
 // todo: 登录
-export const reqLogin = (data: any) =>
-  request({
+export const reqLogin = (data: loginFormData) =>
+  request<any, loginResData>({
     url: API.LOGIN_URL,
     method: 'POST',
     data,
@@ -19,7 +20,7 @@ export const reqLogin = (data: any) =>
 
 // todo: 获取用户信息
 export const reqUserInfo = () =>
-  request({
+  request<any, userInfoData>({
     url: API.USERINFO_URL,
   })
 

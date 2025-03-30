@@ -2,7 +2,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { reqLogin, reqUserInfo } from '../../api/user'
-import type { UserState } from './types/type'
+import type {
+  loginFormData,
+  loginResData,
+  userInfoData,
+} from '../../api/user/type'
 // 引入路由
 import { constantRoute } from '../../router/routes'
 
@@ -10,14 +14,14 @@ export const useUserStore = defineStore(
   'User',
   () => {
     // bro: 存储路由数组
-    const menuRoutes: menuRoutes = ref(constantRoute)
+    const menuRoutes = ref(constantRoute)
 
     // bro: 存储用户token
-    const token: UserState = ref('')
+    const token = ref('')
 
     // todo: 用户登录
-    const userLogin = async (data: any) => {
-      const result: any = await reqLogin(data)
+    const userLogin = async (data: loginFormData) => {
+      const result: loginResData = await reqLogin(data)
       // console.log(result)
 
       if (result.code === 200) {
@@ -35,7 +39,7 @@ export const useUserStore = defineStore(
 
     // todo: 获取用户信息
     const getUserInfo = async () => {
-      const result = await reqUserInfo()
+      const result: userInfoData = await reqUserInfo()
       // console.log(result)
 
       if (result.code === 200) {
