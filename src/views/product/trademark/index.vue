@@ -16,7 +16,7 @@
     // todo: 根据分页和显示页数获取数据
     const getTrademark = async () => {
         const res: TradeMarkResData = await getTrademarkAPI(pageNo.value, limit.value)
-        console.log(res)
+        // console.log(res)
 
         if (res.code === 200) {
             // 获取品牌总数
@@ -30,8 +30,21 @@
     const isImgDie = ref(false)
     const handleImgError = () => {
         // 图片失效时触发此回调
-        isImgError.value = true;
+        isImgError.value = true
     };
+
+    // todo: 页数变化时回调
+    const handleCurrentChange = () => {
+        // console.log('页码变化了');
+        getTrademark()
+    }
+
+    // todo: 页容量变化时回调
+    const handleSizeChange = () => {
+        // console.log('页容量变化了');
+        pageNo.value = 1
+        getTrademark()
+    }
 
     onMounted(() => getTrademark())
 </script>
@@ -71,9 +84,8 @@
 
             <!-- 分页器 -->
             <el-pagination class="page" v-model:current-page="pageNo" v-model:page-size="limit"
-                :page-sizes="[3, 5, 7, 9]" :size="size" :disabled="disabled" :background="true"
-                layout="prev, pager, next, jumper, ->, total, sizes" :total="total" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" />
+                :page-sizes="[3, 5, 7, 9]" :background="true" layout="prev, pager, next, jumper, ->, total, sizes"
+                :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </el-card>
     </div>
 </template>
