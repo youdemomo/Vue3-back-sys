@@ -6,7 +6,7 @@ import type { loginFormData, loginResData, userInfoData } from './type'
 enum API {
   LOGIN_URL = '/acl/user/login',
   USERINFO_URL = '/acl/user/info',
-  // 没有这个接口辣！清空本地存储的Token就当作退出登录了吧
+  // 没有这个接口辣！手动清除pinia数据模拟完成
   // LOGOUT_URL = '/admin/acl/logout',
 }
 

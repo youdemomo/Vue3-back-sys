@@ -1,4 +1,4 @@
-<script lang='ts' setup>
+<script lang="ts" setup>
     import { User, Lock } from '@element-plus/icons-vue'
     import { onMounted, reactive, ref } from 'vue'
     import { useUserStore } from '../../store/modules/user'
@@ -36,7 +36,7 @@
     const userStore = useUserStore()
     const loginForm = reactive({
         username: 'admin',
-        password: '111111'
+        password: '111111',
     })
     const login = async () => {
         // 校验未通过会返回拒绝的Promise
@@ -59,7 +59,7 @@
         } catch (error) {
             ElNotification({
                 type: 'error',
-                message: (error as Error).message
+                message: (error as Error).message,
             })
             loading.value = false
         }
@@ -76,8 +76,8 @@
             },
             {
                 trigger: 'change',
-                validator: validatorUserName
-            }
+                validator: validatorUserName,
+            },
         ],
         password: [
             {
@@ -87,11 +87,10 @@
             },
             {
                 trigger: 'change',
-                validator: validatorPassword
-            }
+                validator: validatorPassword,
+            },
         ],
     }
-
 </script>
 
 <template>
@@ -155,13 +154,13 @@
             .login-btn {
                 width: 100%;
                 background-color: #409eff;
-                color: white
+                color: white;
             }
 
             .login-btn:hover {
                 width: 100%;
                 background-color: #79bbff;
-                color: white
+                color: white;
             }
         }
     }
