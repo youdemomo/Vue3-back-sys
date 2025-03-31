@@ -1,5 +1,6 @@
 // 品牌管理模块
 import request from '../../../utils/request'
+import type { TradeMarkResData } from './type'
 
 enum API {
     TRADEMARK_URL = '/product/baseTrademark',
@@ -9,6 +10,6 @@ enum API {
 // page：获取第几页
 // limit：一页装几个
 export const getTrademarkAPI = (page: number, limit: number) =>
-    request<any, any>({
+    request<any, TradeMarkResData>({
         url: API.TRADEMARK_URL + `/${page}/${limit}`,
     })

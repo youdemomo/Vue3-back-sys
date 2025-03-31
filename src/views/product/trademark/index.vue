@@ -1,6 +1,7 @@
 <script lang="ts" setup>
     import { onMounted, ref } from 'vue';
     import { getTrademarkAPI } from '../../../api/product/trademark';
+    import type { Records, TradeMarkResData } from '../../../api/product/trademark/type';
 
     // 当前页码
     const pageNo = ref<number>(1)
@@ -9,12 +10,12 @@
     // 所有品牌总量（接口返回）
     const total = ref<number>(0)
     // 存储品牌数组（接口返回）
-    const trademarkArr = ref<any>([])
+    const trademarkArr = ref<Records>([])
 
 
     // todo: 根据分页和显示页数获取数据
     const getTrademark = async () => {
-        const res = await getTrademarkAPI(pageNo.value, limit.value)
+        const res: TradeMarkResData = await getTrademarkAPI(pageNo.value, limit.value)
         console.log(res)
 
         if (res.code === 200) {
