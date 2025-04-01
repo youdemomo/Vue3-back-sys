@@ -208,7 +208,7 @@
     }
 
     // todo: 删除品牌
-    // 气泡确认框回调
+    // bro: 气泡确认框回调
     const delTracdmark = async (id: number) => {
         const res = await delTracdmarkAPI(id)
         // console.log(res)
