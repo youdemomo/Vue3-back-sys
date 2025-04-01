@@ -71,34 +71,38 @@
         // 清空弹窗数据
         tradmarkParams.logoUrl = ''
         tradmarkParams.tmName = ''
+        Reflect.deleteProperty(tradmarkParams, 'id')
 
         dialogFormVisible.value = true
         title.value = '添加品牌'
     }
 
-    // 编辑品牌回调
-    const updateTrademark = () => {
-        // 清空弹窗数据
-        tradmarkParams.logoUrl = ''
-        tradmarkParams.tmName = ''
-
+    // bro: 编辑品牌回调
+    const updateTrademark = async (row) => {
         dialogFormVisible.value = true
         title.value = '编辑品牌'
+
+        // 更新传参信息
+        Object.assign(tradmarkParams, row)
     }
 
     // bro: 弹窗提交按钮回调
     const confirmBtn = async () => {
         // 调用接口
         const res = await addOrUpTrademarkAPI(tradmarkParams)
-        // console.log(res);
+        console.log(res);
         if (res.code === 200) {
             ElMessage({
                 type: 'success',
-                message: '添加品牌成功'
+                message: tradmarkParams.id ? '修改成功' : '添加成功'
             })
             dialogFormVisible.value = false
             // 再次获取所有品牌
-            getTrademark()
+            if (!tradmarkParams.id) {
+                // 添加商品后返回首页
+                pageNo.value = 1
+            }
+            await getTrademark()
         } else {
             ElMessage({
                 type: 'error',
@@ -170,7 +174,7 @@
                 <el-table-column label="品牌操作" align="center">
                     <template #="{ row, $index }">
                         <!-- 编辑按钮 -->
-                        <el-button type="primary" size="small" icon="Edit" @click="updateTrademark">编辑</el-button>
+                        <el-button type="primary" size="small" icon="Edit" @click="updateTrademark(row)">编辑</el-button>
                         <!-- 删除按钮 -->
                         <el-button type="primary" size="small" icon="Delete">删除</el-button>
                     </template>
