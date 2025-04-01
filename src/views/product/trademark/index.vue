@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-    import { onMounted, ref } from 'vue';
+    import { onMounted, reactive, ref } from 'vue';
     import { getTrademarkAPI } from '../../../api/product/trademark';
-    import type { Records, TradeMarkResData } from '../../../api/product/trademark/type';
+    import type { Records, TradeMarkResData, TradeMark } from '../../../api/product/trademark/type';
+    import { addOrUpTrademarkAPI } from '../../../api/product/trademark';
+    import { ElMessage, type UploadProps } from 'element-plus'
 
+    // todo: 分页器和获取品牌列表
     // 当前页码
     const pageNo = ref<number>(1)
     // 每页展示的行数
@@ -13,7 +16,7 @@
     const trademarkArr = ref<Records>([])
 
 
-    // todo: 根据分页和显示页数获取数据
+    // bro: 根据分页和显示页数获取数据
     const getTrademark = async () => {
         const res: TradeMarkResData = await getTrademarkAPI(pageNo.value, limit.value)
         // console.log(res)
@@ -30,50 +33,114 @@
         }
     }
 
-    // todo: 图片失效时用默认图片替代
+    // 图片失效时用默认图片替代
     const handleImgError = (row) => {
         // 图片失效时触发此回调
         row.isImgDie = true
     };
 
-    // todo: 页数变化时回调
+    // 页数变化时回调
     const handleCurrentChange = () => {
         // console.log('页码变化了');
         getTrademark()
     }
 
-    // todo: 页容量变化时回调
+    // 页容量变化时回调
     const handleSizeChange = () => {
         // console.log('页容量变化了');
         pageNo.value = 1 // 页码归1
         getTrademark()
     }
 
-    // todo: 弹窗
+    onMounted(() => getTrademark())
+
+
+    // todo: 添加/修改商品弹窗
     // 控制弹窗显隐
     const dialogFormVisible = ref<boolean>(false)
     // 弹窗标题
     const title = ref<string>('')
+    // 收集用户弹窗数据
+    const tradmarkParams = reactive<TradeMark>({
+        tmName: '',
+        logoUrl: '',
+    })
 
     // 添加品牌按钮回调
     const addTrademark = () => {
+        // 清空弹窗数据
+        tradmarkParams.logoUrl = ''
+        tradmarkParams.tmName = ''
+
         dialogFormVisible.value = true
         title.value = '添加品牌'
     }
 
     // 编辑品牌回调
     const updateTrademark = () => {
+        // 清空弹窗数据
+        tradmarkParams.logoUrl = ''
+        tradmarkParams.tmName = ''
+
         dialogFormVisible.value = true
         title.value = '编辑品牌'
     }
 
-    // 弹窗提交按钮回调
+    // bro: 弹窗提交按钮回调
     const confirmBtn = async () => {
-        dialogFormVisible.value = false
+        // 调用接口
+        const res = await addOrUpTrademarkAPI(tradmarkParams)
+        // console.log(res);
+        if (res.code === 200) {
+            ElMessage({
+                type: 'success',
+                message: '添加品牌成功'
+            })
+            dialogFormVisible.value = false
+            // 再次获取所有品牌
+            getTrademark()
+        } else {
+            ElMessage({
+                type: 'error',
+                message: '添加品牌失败'
+            })
+        }
     }
 
-    onMounted(() => getTrademark())
+    // 图片上传前的钩子
+    const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+        // console.log(rawFile)
+        // 限制文件格式
+        if (rawFile.type === 'image/png' || rawFile.type === 'image/jpeg' || rawFile.type === 'image/jpg' || rawFile.type === 'image/gif') {
+            // 限制文件大小
+            if (rawFile.size / 1024 / 1024 <= 20) {
+                return true
+            } else {
+                ElMessage({
+                    type: 'error',
+                    message: '文件大小不能超过20MB'
+                })
+                return fasle
+            }
+        } else {
+            ElMessage({
+                type: 'error',
+                message: '格式只能是：PNG|JPG|GIF'
+            })
+            return fasle
+        }
+    }
 
+    // 图片上传后的钩子
+    const handleAvatarSuccess: UploadProps['onSuccess'] = (
+        response,
+        uploadFile
+    ) => {
+        // console.log(response)
+        // console.log(uploadFile)
+        // 获取服务器返回的图片URL
+        tradmarkParams.logoUrl = response.data.logoUrl
+    }
 </script>
 
 <template>
@@ -122,14 +189,14 @@
             <el-form class="elForm">
                 <!-- 品牌名输入框 -->
                 <el-form-item label="品牌名称" label-width="90px">
-                    <el-input placeholder="请输入品牌名称"></el-input>
+                    <el-input placeholder="请输入品牌名称" v-model="tradmarkParams.tmName"></el-input>
                 </el-form-item>
                 <!-- 图片上传 -->
                 <el-form-item label="品牌logo" label-width="90px">
-                    <el-upload class="avatar-uploader"
-                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" :show-file-list="false"
-                        :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                    <el-upload class="avatar-uploader" action="/api/product/baseTrademark/uploadPicture"
+                        :show-file-list="true" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                        <img v-if="tradmarkParams.logoUrl" :src="`http://localhost:9000${tradmarkParams.logoUrl}`"
+                            class="avatar" />
                         <el-icon v-else class="avatar-uploader-icon">
                             <Plus />
                         </el-icon>
