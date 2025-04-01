@@ -5,6 +5,9 @@
     import { addOrUpTrademarkAPI } from '../../../api/product/trademark';
     import { ElMessage, type UploadProps } from 'element-plus'
 
+    // 表单实例
+    const formRef = ref()
+
     // todo: 分页器和获取品牌列表
     // 当前页码
     const pageNo = ref<number>(1)
@@ -73,21 +76,36 @@
         tradmarkParams.tmName = ''
         Reflect.deleteProperty(tradmarkParams, 'id')
 
-        dialogFormVisible.value = true
+        // 清空校验错误提示信息
+        formRef.value?.clearValidate('tmName')
+        formRef.value?.clearValidate('logoUrl')
+
+        // 更新弹窗标题
         title.value = '添加品牌'
+
+        dialogFormVisible.value = true
     }
 
-    // bro: 编辑品牌回调
-    const updateTrademark = async (row) => {
-        dialogFormVisible.value = true
+    // 编辑品牌回调
+    const updateTrademark = (row) => {
+        // 清空校验错误提示信息
+        formRef.value?.clearValidate('tmName')
+        formRef.value?.clearValidate('logoUrl')
+
+        // 更新弹窗标题
         title.value = '编辑品牌'
 
         // 更新传参信息
         Object.assign(tradmarkParams, row)
+
+        dialogFormVisible.value = true
     }
 
     // bro: 弹窗提交按钮回调
     const confirmBtn = async () => {
+        // 表单全局校验(根据校验结果返回Promise)
+        await formRef.value.validate();
+
         // 调用接口
         const res = await addOrUpTrademarkAPI(tradmarkParams)
         console.log(res);
@@ -144,6 +162,50 @@
         // console.log(uploadFile)
         // 获取服务器返回的图片URL
         tradmarkParams.logoUrl = response.data.logoUrl
+
+        // 清除logo校验的错误信息
+        formRef.value.clearValidate('logoUrl')
+    }
+
+    // todo: 弹窗表单校验
+    // tmName自定义规则函数
+    const validatorTmName = (rule: any, value: any, callBack: any) => {
+        if (value.trim().length >= 2) {
+            // 校验成功
+            callBack()
+        } else {
+            // 校验失败
+            callBack(new Error('品牌名称不能小于2位'))
+        }
+    }
+
+    // logoUrl自定义规则函数（全局校验中触发）
+    const validatorLogoUrl = (rule: any, value: any, callBack: any) => {
+        if (value) {
+            callBack()
+        } else {
+            callBack(new Error('图片上传失败'))
+        }
+    }
+
+    // 规则对象
+    const rules = {
+        tmName: [
+            {
+                // 该项必填
+                required: true,
+                // 校验触发时机 blur:失焦 change:文本变化
+                trigger: 'blur',
+                // 自定义校验
+                validator: validatorTmName
+            }
+        ],
+        logoUrl: [
+            {
+                required: true,
+                validator: validatorLogoUrl
+            }
+        ]
     }
 </script>
 
@@ -190,13 +252,13 @@
         <!-- 添加/编辑品牌弹窗 -->
         <el-dialog v-model="dialogFormVisible" :title="title" width="600">
             <!-- 弹窗主体表单 -->
-            <el-form class="elForm">
+            <el-form class="elForm" :model="tradmarkParams" :rules="rules" ref="formRef">
                 <!-- 品牌名输入框 -->
-                <el-form-item label="品牌名称" label-width="90px">
+                <el-form-item label="品牌名称" label-width="90px" prop="tmName">
                     <el-input placeholder="请输入品牌名称" v-model="tradmarkParams.tmName"></el-input>
                 </el-form-item>
                 <!-- 图片上传 -->
-                <el-form-item label="品牌logo" label-width="90px">
+                <el-form-item label="品牌logo" label-width="90px" prop="logoUrl">
                     <el-upload class="avatar-uploader" action="/api/product/baseTrademark/uploadPicture"
                         :show-file-list="true" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                         <img v-if="tradmarkParams.logoUrl" :src="`http://localhost:9000${tradmarkParams.logoUrl}`"
