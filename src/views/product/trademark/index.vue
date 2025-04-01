@@ -1,8 +1,7 @@
 <script lang="ts" setup>
     import { onMounted, reactive, ref } from 'vue';
-    import { getTrademarkAPI } from '../../../api/product/trademark';
+    import { getTrademarkAPI, addOrUpTrademarkAPI, delTracdmarkAPI } from '../../../api/product/trademark';
     import type { Records, TradeMarkResData, TradeMark } from '../../../api/product/trademark/type';
-    import { addOrUpTrademarkAPI } from '../../../api/product/trademark';
     import { ElMessage, type UploadProps } from 'element-plus'
 
     // 表单实例
@@ -207,6 +206,29 @@
             }
         ]
     }
+
+    // todo: 删除品牌
+    // 气泡确认框回调
+    const delTracdmark = async (id: number) => {
+        const res = await delTracdmarkAPI(id)
+        // console.log(res)
+        if (res.code === 200) {
+            ElMessage({
+                type: 'success',
+                message: '删除成功'
+            })
+            // 如果删除后该页无商品，则返回上一页
+            if (trademarkArr.value.length <= 1) {
+                pageNo.value -= 1
+            }
+            await getTrademark()
+        } else {
+            ElMessage({
+                type: 'error',
+                message: '删除失败'
+            })
+        }
+    } 
 </script>
 
 <template>
@@ -238,7 +260,12 @@
                         <!-- 编辑按钮 -->
                         <el-button type="primary" size="small" icon="Edit" @click="updateTrademark(row)">编辑</el-button>
                         <!-- 删除按钮 -->
-                        <el-button type="primary" size="small" icon="Delete">删除</el-button>
+                        <el-popconfirm :title="`确定要删除：${row.tmName} 品牌吗？`" width="200px" icon="Delete"
+                            @confirm="delTracdmark(row.id)">
+                            <template #reference>
+                                <el-button size="small" icon="Delete">删除</el-button>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
