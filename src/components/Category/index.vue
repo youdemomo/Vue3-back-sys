@@ -6,6 +6,9 @@
     // 获取分类商店
     const categoryStore = useCategoryStore()
 
+    // 获取编辑面板显隐标识
+    defineProps(['isBanSelect'])
+
     // todo: 获取一级分类列表
     const getC1 = () => {
         categoryStore.getC1List()
@@ -35,19 +38,29 @@
         <el-form inline>
             <!-- 一级分类 -->
             <el-form-item label="一级分类">
-                <el-select v-model="categoryStore.c1Id" placeholder="一级分类" style="width: 168px" @change="c1Handler">
+                <el-select
+                    v-model="categoryStore.c1Id"
+                    placeholder="一级分类"
+                    style="width: 168px"
+                    @change="c1Handler"
+                    :disabled="isBanSelect">
                     <el-option v-for="c1 in categoryStore.c1Arr" :key="c1.id" :label="c1.name" :value="c1.id"></el-option>
                 </el-select>
             </el-form-item>
             <!-- 二级分类 -->
             <el-form-item label="二级分类">
-                <el-select v-model="categoryStore.c2Id" placeholder="二级分类" style="width: 168px" @change="c2Handler">
+                <el-select
+                    v-model="categoryStore.c2Id"
+                    placeholder="二级分类"
+                    style="width: 168px"
+                    @change="c2Handler"
+                    :disabled="isBanSelect">
                     <el-option v-for="c2 in categoryStore.c2Arr" :key="c2.id" :label="c2.name" :value="c2.id"></el-option>
                 </el-select>
             </el-form-item>
             <!-- 三级分类 -->
             <el-form-item label="三级分类">
-                <el-select placeholder="三级分类" style="width: 168px" v-model="categoryStore.c3Id">
+                <el-select placeholder="三级分类" style="width: 168px" v-model="categoryStore.c3Id" :disabled="isBanSelect">
                     <el-option v-for="c3 in categoryStore.c3Arr" :key="c3.id" :label="c3.name" :value="c3.id"></el-option>
                 </el-select>
             </el-form-item>
