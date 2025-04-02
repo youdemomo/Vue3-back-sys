@@ -1,5 +1,7 @@
-<script lang='ts' setup>
+<script lang="ts" setup>
+    import { useCategoryStore } from '../../../store/modules/category'
 
+    const categoryStore = useCategoryStore()
 </script>
 
 <template>
@@ -9,7 +11,7 @@
 
         <!-- 底部卡片 -->
         <el-card class="footerCard">
-            <el-button type="primary" size="default" icon="Plus">添加商品属性</el-button>
+            <el-button type="primary" size="default" icon="Plus" :disabled="!categoryStore.c3Id">添加商品属性</el-button>
             <el-table border>
                 <el-table-column label="序号" type="index" align="center" width="80px"></el-table-column>
                 <el-table-column label="属性名称" width="120px" align="center"></el-table-column>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-    import { onMounted, reactive, ref } from 'vue';
-    import { getTrademarkAPI, addOrUpTrademarkAPI, delTracdmarkAPI } from '../../../api/product/trademark';
-    import type { Records, TradeMarkResData, TradeMark } from '../../../api/product/trademark/type';
+    import { onMounted, reactive, ref } from 'vue'
+    import { getTrademarkAPI, addOrUpTrademarkAPI, delTracdmarkAPI } from '../../../api/product/trademark'
+    import type { Records, TradeMarkResData, TradeMark } from '../../../api/product/trademark/type'
     import { ElMessage, type UploadProps } from 'element-plus'
 
     // 表单实例
@@ -17,7 +17,6 @@
     // 存储品牌数组（接口返回）
     const trademarkArr = ref<Records>([])
 
-
     // bro: 根据分页和显示页数获取数据
     const getTrademark = async () => {
         const res: TradeMarkResData = await getTrademarkAPI(pageNo.value, limit.value)
@@ -29,9 +28,9 @@
             // 获取品牌数组
             trademarkArr.value = res.data.records
             // 给数组中每一项添加图片是否失效标识
-            trademarkArr.value.forEach(row => {
-                row.isImgDie = false; // 确保每行都有 isImgDie
-            });
+            trademarkArr.value.forEach((row) => {
+                row.isImgDie = false // 确保每行都有 isImgDie
+            })
         }
     }
 
@@ -39,7 +38,7 @@
     const handleImgError = (row) => {
         // 图片失效时触发此回调
         row.isImgDie = true
-    };
+    }
 
     // 页数变化时回调
     const handleCurrentChange = () => {
@@ -55,7 +54,6 @@
     }
 
     onMounted(() => getTrademark())
-
 
     // todo: 添加/修改商品弹窗
     // 控制弹窗显隐
@@ -103,15 +101,15 @@
     // bro: 弹窗提交按钮回调
     const confirmBtn = async () => {
         // 表单全局校验(根据校验结果返回Promise)
-        await formRef.value.validate();
+        await formRef.value.validate()
 
         // 调用接口
         const res = await addOrUpTrademarkAPI(tradmarkParams)
-        console.log(res);
+        console.log(res)
         if (res.code === 200) {
             ElMessage({
                 type: 'success',
-                message: tradmarkParams.id ? '修改成功' : '添加成功'
+                message: tradmarkParams.id ? '修改成功' : '添加成功',
             })
             dialogFormVisible.value = false
             // 再次获取所有品牌
@@ -123,7 +121,7 @@
         } else {
             ElMessage({
                 type: 'error',
-                message: '添加品牌失败'
+                message: '添加品牌失败',
             })
         }
     }
@@ -132,31 +130,33 @@
     const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
         // console.log(rawFile)
         // 限制文件格式
-        if (rawFile.type === 'image/png' || rawFile.type === 'image/jpeg' || rawFile.type === 'image/jpg' || rawFile.type === 'image/gif') {
+        if (
+            rawFile.type === 'image/png' ||
+            rawFile.type === 'image/jpeg' ||
+            rawFile.type === 'image/jpg' ||
+            rawFile.type === 'image/gif'
+        ) {
             // 限制文件大小
             if (rawFile.size / 1024 / 1024 <= 20) {
                 return true
             } else {
                 ElMessage({
                     type: 'error',
-                    message: '文件大小不能超过20MB'
+                    message: '文件大小不能超过20MB',
                 })
                 return fasle
             }
         } else {
             ElMessage({
                 type: 'error',
-                message: '格式只能是：PNG|JPG|GIF'
+                message: '格式只能是：PNG|JPG|GIF',
             })
             return fasle
         }
     }
 
     // 图片上传后的钩子
-    const handleAvatarSuccess: UploadProps['onSuccess'] = (
-        response,
-        uploadFile
-    ) => {
+    const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
         // console.log(response)
         // console.log(uploadFile)
         // 获取服务器返回的图片URL
@@ -196,15 +196,15 @@
                 // 校验触发时机 blur:失焦 change:文本变化
                 trigger: 'blur',
                 // 自定义校验
-                validator: validatorTmName
-            }
+                validator: validatorTmName,
+            },
         ],
         logoUrl: [
             {
                 required: true,
-                validator: validatorLogoUrl
-            }
-        ]
+                validator: validatorLogoUrl,
+            },
+        ],
     }
 
     // todo: 删除品牌
@@ -215,7 +215,7 @@
         if (res.code === 200) {
             ElMessage({
                 type: 'success',
-                message: '删除成功'
+                message: '删除成功',
             })
             // 如果删除后该页无商品，则返回上一页
             if (trademarkArr.value.length <= 1) {
@@ -225,10 +225,10 @@
         } else {
             ElMessage({
                 type: 'error',
-                message: '删除失败'
+                message: '删除失败',
             })
         }
-    } 
+    }
 </script>
 
 <template>
@@ -240,18 +240,18 @@
             <!-- 展示品牌表格 -->
             <el-table border :data="trademarkArr">
                 <!-- 第一列 -->
-                <el-table-column label="序号" width="80px" align="center" type="index">
-                </el-table-column>
+                <el-table-column label="序号" width="80px" align="center" type="index"> </el-table-column>
                 <!-- 第二列 -->
-                <el-table-column label="品牌名称" align="center" prop="tmName">
-                </el-table-column>
+                <el-table-column label="品牌名称" align="center" prop="tmName"> </el-table-column>
                 <!-- 第三列 -->
                 <el-table-column label="品牌logo" align="center">
-                    <template #="
-                        { row, $index }">
-                        <img v-if="!row.isImgDie" :src="`http://localhost:9000${row.logoUrl}`" alt="图片寄了(；′⌒`)"
+                    <template #="{ row, $index }">
+                        <img
+                            v-if="!row.isImgDie"
+                            :src="`http://localhost:9000${row.logoUrl}`"
+                            alt="图片寄了(；′⌒`)"
                             @error="handleImgError(row)" />
-                        <img v-else src="../../../assets/images/gura.jpg" alt="本地的也寄了" title="这是本地的图片">
+                        <img v-else src="../../../assets/images/gura.jpg" alt="本地的也寄了" title="这是本地的图片" />
                     </template>
                 </el-table-column>
                 <!-- 第四列 -->
@@ -260,7 +260,10 @@
                         <!-- 编辑按钮 -->
                         <el-button type="primary" size="small" icon="Edit" @click="updateTrademark(row)">编辑</el-button>
                         <!-- 删除按钮 -->
-                        <el-popconfirm :title="`确定要删除：${row.tmName} 品牌吗？`" width="200px" icon="Delete"
+                        <el-popconfirm
+                            :title="`确定要删除：${row.tmName} 品牌吗？`"
+                            width="200px"
+                            icon="Delete"
                             @confirm="delTracdmark(row.id)">
                             <template #reference>
                                 <el-button size="small" icon="Delete">删除</el-button>
@@ -271,9 +274,16 @@
             </el-table>
 
             <!-- 分页器 -->
-            <el-pagination class="page" v-model:current-page="pageNo" v-model:page-size="limit"
-                :page-sizes="[3, 5, 7, 9]" :background="true" layout="prev, pager, next, jumper, ->, total, sizes"
-                :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            <el-pagination
+                class="page"
+                v-model:current-page="pageNo"
+                v-model:page-size="limit"
+                :page-sizes="[3, 5, 7, 9]"
+                :background="true"
+                layout="prev, pager, next, jumper, ->, total, sizes"
+                :total="total"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange" />
         </el-card>
 
         <!-- 添加/编辑品牌弹窗 -->
@@ -286,9 +296,15 @@
                 </el-form-item>
                 <!-- 图片上传 -->
                 <el-form-item label="品牌logo" label-width="90px" prop="logoUrl">
-                    <el-upload class="avatar-uploader" action="/api/product/baseTrademark/uploadPicture"
-                        :show-file-list="true" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                        <img v-if="tradmarkParams.logoUrl" :src="`http://localhost:9000${tradmarkParams.logoUrl}`"
+                    <el-upload
+                        class="avatar-uploader"
+                        action="/api/product/baseTrademark/uploadPicture"
+                        :show-file-list="true"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                        <img
+                            v-if="tradmarkParams.logoUrl"
+                            :src="`http://localhost:9000${tradmarkParams.logoUrl}`"
                             class="avatar" />
                         <el-icon v-else class="avatar-uploader-icon">
                             <Plus />
@@ -301,9 +317,7 @@
             <template #footer>
                 <div class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取消</el-button>
-                    <el-button type="primary" @click="confirmBtn">
-                        确认
-                    </el-button>
+                    <el-button type="primary" @click="confirmBtn"> 确认 </el-button>
                 </div>
             </template>
         </el-dialog>
@@ -311,14 +325,12 @@
 </template>
 
 <style scoped lang="scss">
-
     .btn {
         padding: 14px 26px;
         padding-left: 20px;
         line-height: 32px;
         margin: 10px 0;
     }
-
 
     // 分页器
     .page {
@@ -350,7 +362,6 @@
 </style>
 
 <style>
-
     /* 弹窗图片上传全局样式 */
     .avatar-uploader .el-upload {
         border: 1px dashed var(--el-border-color);
