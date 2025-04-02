@@ -38,7 +38,7 @@ export const useCategoryStore = defineStore('Category', () => {
     // 获取三级分类列表
     const getC3List = async () => {
         const res: any = await getC3API(c2Id.value)
-        console.log(res)
+        // console.log(res)
         c3Arr.value = res.data
     }
 
