@@ -12,6 +12,8 @@ enum API {
     ATTR_URL = '/product/attrInfoList',
     // 添加/修改商品属性
     ADDORUPDATE_URL = '/product/saveAttrInfo',
+    // 删除商品属性
+    DELETEATTR_URL = '/product/deleteAttr',
 }
 
 // todo: 获取一级分类
@@ -44,4 +46,11 @@ export const addOrUpdateAttrAPI = (data: any) =>
         url: API.ADDORUPDATE_URL,
         method: 'POST',
         data,
+    })
+
+// todo: 删除商品属性
+export const deleteAttrAPI = (attrId) =>
+    request({
+        url: API.DELETEATTR_URL + `/${attrId}`,
+        method: 'DELETE',
     })

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
     import { useCategoryStore } from '../../../store/modules/category'
-    import { getAttrAPI, addOrUpdateAttrAPI } from '../../../api/product/attr'
-    import { nextTick, reactive, ref, watch } from 'vue'
+    import { getAttrAPI, addOrUpdateAttrAPI, deleteAttrAPI } from '../../../api/product/attr'
+    import { nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
     import { ElMessage } from 'element-plus'
 
     // todo: 获取商品属性
@@ -118,8 +118,10 @@
     }
 
     // 表格内编辑按钮回调
-    const updateBtn = () => {
+    const updateBtn = (row) => {
         isShowEdit.value = true
+        // 将该行的属性对象赋值给接口传参(需要深拷贝)
+        Object.assign(attrParams, JSON.parse(JSON.stringify(row)))
     }
 
     // 取消按钮回调
@@ -166,6 +168,25 @@
             })
         }
     }
+
+    // bro: 根据商品属性id删除
+    const DeleteAttr = async (row) => {
+        const res = await deleteAttrAPI(row.id)
+        // console.log(res)
+
+        if (res.code === 200) {
+            ElMessage({
+                type: 'success',
+                message: '删除成功',
+            })
+            await getAttr()
+        } else {
+            ElMessage({
+                type: 'error',
+                message: '删除失败',
+            })
+        }
+    }
 </script>
 
 <template>
@@ -197,9 +218,14 @@
                     <el-table-column label="操作" width="130px" align="center">
                         <template #="{ row, $index }">
                             <!-- 编辑按钮 -->
-                            <el-button type="primary" size="small" icon="Edit" @click="updateBtn"></el-button>
-                            <!-- 删除按钮 -->
-                            <el-button type="primary" size="small" icon="Delete"></el-button>
+                            <el-button type="primary" size="small" icon="Edit" @click="updateBtn(row)"></el-button>
+                            <!-- 删除气泡框 -->
+                            <el-popconfirm :title="`你确定删除 ${row.attrName} 吗？`" width="210px" @confirm="DeleteAttr(row)">
+                                <template #reference>
+                                    <!-- 删除按钮 -->
+                                    <el-button type="primary" size="small" icon="Delete"></el-button>
+                                </template>
+                            </el-popconfirm>
                         </template>
                     </el-table-column>
                 </el-table>
