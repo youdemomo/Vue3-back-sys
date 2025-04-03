@@ -1,7 +1,7 @@
 <script lang="ts" setup>
     import { useCategoryStore } from '../../../store/modules/category'
     import { getAttrAPI, addOrUpdateAttrAPI } from '../../../api/product/attr'
-    import { reactive, ref, watch } from 'vue'
+    import { nextTick, reactive, ref, watch } from 'vue'
     import { ElMessage } from 'element-plus'
 
     // todo: 获取商品属性
@@ -51,6 +51,7 @@
     // 控制卡片变化
     const isShowEdit = ref(false)
 
+    // todo: 属性值输入切换逻辑/异常输入判断
     // 属性值输入框失焦时回调
     const toLook = (row, $index) => {
         // 返回属性值重复的项
@@ -84,8 +85,24 @@
     }
 
     // 属性输入框点击回调
-    const toEdit = (row) => {
+    const toEdit = (row, $index) => {
         row.editFlag = true
+
+        // 上面的响应式数据变化后调用这个钩子
+        nextTick(() => {
+            inputArr.value[$index].focus()
+        })
+    }
+
+    // todo: el-input 自动聚焦
+    // 存储所有的 el-input 实例
+    const inputArr = ref([])
+
+    // 输入框内容更新后调用
+    const handler = (element, $index) => {
+        // console.log(element)
+        // console.log($index)
+        inputArr.value[$index] = element
     }
 
     // 添加属性按钮回调
@@ -117,6 +134,11 @@
             valueName: '',
             // 控制输入框和div的切换
             editFlag: true,
+        })
+
+        // 点击后让最后一个输入框聚焦
+        nextTick(() => {
+            inputArr.value[attrParams.attrValueList.length - 1].focus()
         })
     }
 
@@ -207,12 +229,21 @@
                                 v-show="row.editFlag"
                                 @blur="toLook(row, $index)"
                                 placeholder="请输入属性值名称"
-                                v-model="row.valueName"></el-input>
-                            <div v-show="!row.editFlag" @click="toEdit(row)">{{ row.valueName }}</div>
+                                v-model="row.valueName"
+                                :ref="(element) => handler(element, $index)"></el-input>
+                            <div v-show="!row.editFlag" @click="toEdit(row, $index)">{{ row.valueName }}</div>
                         </template>
                     </el-table-column>
                     <!-- 第三列 -->
-                    <el-table-column width="100px" align="center" label="操作"></el-table-column>
+                    <el-table-column width="100px" align="center" label="操作">
+                        <template #="{ row, $index }">
+                            <el-button
+                                type="primary"
+                                size="small"
+                                icon="Delete"
+                                @click="attrParams.attrValueList.splice($index, 1)"></el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <!-- 保存更改按钮 -->
                 <el-button
