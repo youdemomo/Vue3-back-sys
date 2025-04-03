@@ -1,7 +1,8 @@
 <script lang="ts" setup>
     import { useCategoryStore } from '../../../store/modules/category'
-    import { getAttrAPI } from '../../../api/product/attr'
-    import { ref, watch } from 'vue'
+    import { getAttrAPI, addOrUpdateAttrAPI } from '../../../api/product/attr'
+    import { reactive, ref, watch } from 'vue'
+    import { ElMessage } from 'element-plus'
 
     // todo: 获取商品属性
     const categoryStore = useCategoryStore()
@@ -9,32 +10,56 @@
     // 存储商品属性
     const attrArr = ref()
 
-    // 监听仓库三级分类Id的变化
+    // bro: 获取已有属性
+    const getAttr = async () => {
+        const { c1Id, c2Id, c3Id } = categoryStore
+        if (c3Id) {
+            const res = await getAttrAPI(c1Id, c2Id, c3Id)
+            // console.log(res)
+
+            if (res.code === 200) {
+                attrArr.value = res.data
+            }
+        }
+    }
+
+    // bro: 监听仓库三级分类Id的变化
     watch(
         () => categoryStore.c3Id,
         async () => {
             // 清空商品属性数组
             attrArr.value = []
-            // 获取分类id
-            const { c1Id, c2Id, c3Id } = categoryStore
-            // c3Id不为空才发送请求
-            if (c3Id) {
-                const res = await getAttrAPI(c1Id, c2Id, c3Id)
-                // console.log(res)
-
-                if (res.code === 200) {
-                    attrArr.value = res.data
-                }
-            }
+            // 获取属性列表
+            await getAttr()
         },
     )
 
-    // todo: 添加商品属性
+    // todo: 添加/修改商品属性
+    // 添加/修改接口传参
+    const attrParams = reactive({
+        // 属性id，修改时需要传入
+        // id: '',
+        // 属性名
+        attrName: '',
+        // 新增属性数组
+        attrValueList: [],
+        // 所属三级分类id
+        categoryId: 0,
+        // 分类级别，默认为3
+        categoryLevel: 3,
+    })
     // 控制卡片变化
     const isShowEdit = ref(false)
 
-    // 添加按钮回调
+    // 添加属性按钮回调
     const addAttrBtn = () => {
+        // 清除上一次传参
+        Object.assign(attrParams, {
+            attrName: '',
+            attrValueList: [],
+            categoryId: 0,
+            categoryLevel: 3,
+        })
         isShowEdit.value = true
     }
 
@@ -46,6 +71,39 @@
     // 取消按钮回调
     const cancelBtn = () => {
         isShowEdit.value = false
+    }
+
+    // 添加属性值按钮回调
+    const addAttrValueBtn = () => {
+        // 向属性值数组中添加一个对象
+        attrParams.attrValueList.push({
+            valueName: '',
+        })
+    }
+
+    // bro: 保存按钮回调
+    const saveBtn = async () => {
+        // 获取当前属性所属三级分类id
+        attrParams.categoryId = categoryStore.c3Id
+
+        // 发送请求
+        const res: any = await addOrUpdateAttrAPI(attrParams)
+        // console.log(res)
+
+        if (res.code === 200) {
+            ElMessage({
+                type: 'success',
+                message: '添加/修改属性成功',
+            })
+            // 切换面板，再次获取三级分类列表
+            await getAttr()
+            isShowEdit.value = false
+        } else {
+            ElMessage({
+                type: 'error',
+                message: '添加/修改属性失败',
+            })
+        }
     }
 </script>
 
@@ -91,20 +149,26 @@
                 <el-form inline>
                     <!-- 属性名输入框 -->
                     <el-form-item label="属性名称">
-                        <el-input placeholder="请输入属性名称"></el-input>
+                        <el-input placeholder="请输入属性名称" v-model="attrParams.attrName"></el-input>
                     </el-form-item>
                 </el-form>
                 <!-- 添加属性按钮 -->
-                <el-button type="primary" size="default" icon="Plus">添加属性值</el-button>
+                <el-button type="primary" size="default" icon="Plus" :disabled="!attrParams.attrName" @click="addAttrValueBtn"
+                    >添加属性值</el-button
+                >
                 <el-button type="primary" size="default" @click="cancelBtn">取消</el-button>
                 <!-- 添加属性面板 -->
-                <el-table border>
-                    <el-table-column width="80px" align="center" label="序号"></el-table-column>
-                    <el-table-column label="属性值"></el-table-column>
+                <el-table border :data="attrParams.attrValueList">
+                    <el-table-column width="80px" align="center" label="序号" type="index"></el-table-column>
+                    <el-table-column label="属性值">
+                        <template #="{ row, $index }">
+                            <el-input placeholder="请输入属性值名称" v-model="row.valueName"></el-input>
+                        </template>
+                    </el-table-column>
                     <el-table-column width="100px" align="center" label="操作"></el-table-column>
                 </el-table>
                 <!-- 保存更改按钮 -->
-                <el-button type="primary" size="default">保存</el-button>
+                <el-button type="primary" size="default" @click="saveBtn">保存</el-button>
                 <el-button type="primary" size="default" @click="cancelBtn">取消</el-button>
             </div>
         </el-card>
