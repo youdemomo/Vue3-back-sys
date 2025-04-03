@@ -51,6 +51,43 @@
     // 控制卡片变化
     const isShowEdit = ref(false)
 
+    // 属性值输入框失焦时回调
+    const toLook = (row, $index) => {
+        // 返回属性值重复的项
+        const repeatRow = attrParams.attrValueList.find((item) => {
+            if (item != row) {
+                return item.valueName === row.valueName
+            }
+        })
+
+        // 清空属性值重复的项
+        if (repeatRow) {
+            attrParams.attrValueList.splice($index, 1)
+            ElMessage({
+                type: 'error',
+                message: `属性值：${repeatRow.valueName} 已经存在`,
+            })
+            return
+        }
+
+        // 该行属性值存在才能变为div
+        if (row.valueName.trim() == '') {
+            // 从接口传参中去除属性值为空的项目
+            attrParams.attrValueList.splice($index, 1)
+            ElMessage({
+                type: 'warning',
+                message: '属性值不能为空',
+            })
+            return
+        }
+        row.editFlag = false
+    }
+
+    // 属性输入框点击回调
+    const toEdit = (row) => {
+        row.editFlag = true
+    }
+
     // 添加属性按钮回调
     const addAttrBtn = () => {
         // 清除上一次传参
@@ -78,6 +115,8 @@
         // 向属性值数组中添加一个对象
         attrParams.attrValueList.push({
             valueName: '',
+            // 控制输入框和div的切换
+            editFlag: true,
         })
     }
 
@@ -159,16 +198,30 @@
                 <el-button type="primary" size="default" @click="cancelBtn">取消</el-button>
                 <!-- 添加属性面板 -->
                 <el-table border :data="attrParams.attrValueList">
+                    <!-- 第一列 -->
                     <el-table-column width="80px" align="center" label="序号" type="index"></el-table-column>
+                    <!-- 第二列 -->
                     <el-table-column label="属性值">
                         <template #="{ row, $index }">
-                            <el-input placeholder="请输入属性值名称" v-model="row.valueName"></el-input>
+                            <el-input
+                                v-show="row.editFlag"
+                                @blur="toLook(row, $index)"
+                                placeholder="请输入属性值名称"
+                                v-model="row.valueName"></el-input>
+                            <div v-show="!row.editFlag" @click="toEdit(row)">{{ row.valueName }}</div>
                         </template>
                     </el-table-column>
+                    <!-- 第三列 -->
                     <el-table-column width="100px" align="center" label="操作"></el-table-column>
                 </el-table>
                 <!-- 保存更改按钮 -->
-                <el-button type="primary" size="default" @click="saveBtn">保存</el-button>
+                <el-button
+                    type="primary"
+                    size="default"
+                    @click="saveBtn"
+                    :disabled="attrParams.attrValueList.length > 0 ? false : true"
+                    >保存</el-button
+                >
                 <el-button type="primary" size="default" @click="cancelBtn">取消</el-button>
             </div>
         </el-card>
